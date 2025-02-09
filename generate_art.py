@@ -170,7 +170,7 @@ if token and repo:
     run("git remote set-url origin " + remote_url)
 
     ############# FORCE-PUSH THE NEW HISTORY #############
-    run("git push origin " + branch_name + " --force")
+    run("git push origin art --force")
     print("Commit art generation complete.")
 
 if __name__ == "__main__":
