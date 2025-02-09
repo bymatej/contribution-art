@@ -6,9 +6,11 @@ import os
 def run(cmd, env=None):
     """Run a shell command, printing it first for logging."""
     print("Running:", cmd)
-    result = subprocess.run(cmd, shell=True, check=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    result = subprocess.run(cmd, shell=True, check=False, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     print(result.stdout.decode())
     print(result.stderr.decode())
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(result.returncode, cmd, output=result.stdout, stderr=result.stderr)
 
 def main():
     ############# DATE RANGE SETUP #############
@@ -109,8 +111,12 @@ def main():
     # Fetch all branches first to ensure 'art' is available locally
     run("git fetch --all")
 
-    # Check out the 'art' branch if it exists or create it if needed
-    run("git checkout art || git checkout -b art origin/art")
+    try:
+        # Try checking out the 'art' branch, or create it from remote if it doesn't exist
+        run("git checkout art")
+    except subprocess.CalledProcessError:
+        print("The 'art' branch does not exist locally. Creating and tracking it from the remote...")
+        run("git checkout -b art origin/art")
 
     filename = "art.txt"
     with open(filename, "w") as f:
