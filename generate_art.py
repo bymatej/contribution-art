@@ -10,14 +10,12 @@ def run(cmd, env=None):
 
 def main():
     ############# DATE RANGE SETUP #############
-    # We want to rebuild a commit history covering 53 full weeks (371 days).
     today = datetime.date.today()
     offset = (today.weekday() - 5) % 7  
     last_saturday = today - datetime.timedelta(days=offset)
     end_date = last_saturday
     start_date = end_date - datetime.timedelta(days=370)
     total_days = (end_date - start_date).days + 1  # should be 371
-
     print(f"Generating commit art from {start_date} to {end_date} ({total_days} days)")
 
     ############# PATTERN SETUP #############
@@ -106,9 +104,8 @@ def main():
             combined[r].extend(pat[r])
     full_pattern = [row[:53] for row in combined]
 
-    branch_name = "art"
-    run("git checkout --orphan " + branch_name)
-    run("git rm -rf .")
+    # Switch to the already created 'art' branch
+    run("git checkout art")
 
     filename = "art.txt"
     with open(filename, "w") as f:
@@ -142,19 +139,17 @@ def main():
         current_date += datetime.timedelta(days=1)
         day_index += 1
 
-    # Update the remote URL with the token
+    # Update the remote URL with token
     token = os.environ.get("GITHUB_TOKEN")
     repo = os.environ.get("GITHUB_REPOSITORY")
     if token and repo:
         remote_url = f"https://x-access-token:{token}@github.com/{repo}.git"
         run("git remote set-url origin " + remote_url)
 
-  # Push the branch to create it remotely first
-    run("git push --set-upstream origin art")
-
-    # Now that we have commits, force push the branch
-    run("git push origin art --force")
-    print("Commit art generation complete.")
+        # Force-push the already created branch
+        run("git push origin art --force")
+    else:
+        print("GITHUB_TOKEN or GITHUB_REPOSITORY not set!")
 
 if __name__ == "__main__":
     main()
