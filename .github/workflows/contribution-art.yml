@@ -1,10 +1,9 @@
 name: Generate MATEJ Commit Art Daily
 
 on:
-  # Run every day at midnight UTC (adjust cron if needed)
   schedule:
     - cron: '0 0 * * *'
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
 
 jobs:
   generate-art:
@@ -13,7 +12,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          # We disable credential persistence since we’ll force-push later.
           persist-credentials: false
 
       - name: Set up Python
@@ -21,9 +19,13 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Configure Git identity
+        run: |
+          git config --global user.name "GitHub Actions Bot (bymatej)"
+          git config --global user.email "programming@bymatej.com"
+
       - name: Generate commit art
         env:
-          # The automatically provided GITHUB_TOKEN must have permission to force push.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 generate_art.py
