@@ -162,6 +162,13 @@ def main():
         current_date += datetime.timedelta(days=1)
         day_index += 1
 
+# add token
+token = os.environ.get("GITHUB_TOKEN")
+repo = os.environ.get("GITHUB_REPOSITORY")
+if token and repo:
+    remote_url = f"https://x-access-token:{token}@github.com/{repo}.git"
+    run("git remote set-url origin " + remote_url)
+
     ############# FORCE-PUSH THE NEW HISTORY #############
     run("git push origin " + branch_name + " --force")
     print("Commit art generation complete.")
