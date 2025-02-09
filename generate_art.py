@@ -6,7 +6,9 @@ import os
 def run(cmd, env=None):
     """Run a shell command, printing it first for logging."""
     print("Running:", cmd)
-    subprocess.run(cmd, shell=True, check=True, env=env)
+    result = subprocess.run(cmd, shell=True, check=True, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print(result.stdout.decode())
+    print(result.stderr.decode())
 
 def main():
     ############# DATE RANGE SETUP #############
@@ -104,8 +106,11 @@ def main():
             combined[r].extend(pat[r])
     full_pattern = [row[:53] for row in combined]
 
-    # Switch to the already created 'art' branch
-    run("git checkout art")
+    # Fetch all branches first to ensure 'art' is available locally
+    run("git fetch --all")
+
+    # Check out the 'art' branch if it exists or create it if needed
+    run("git checkout art || git checkout -b art origin/art")
 
     filename = "art.txt"
     with open(filename, "w") as f:
