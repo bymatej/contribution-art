@@ -149,6 +149,9 @@ def main():
         remote_url = f"https://x-access-token:{token}@github.com/{repo}.git"
         run("git remote set-url origin " + remote_url)
 
+  # Push the branch to create it remotely first
+    run("git push --set-upstream origin art")
+
     # Now that we have commits, force push the branch
     run("git push origin art --force")
     print("Commit art generation complete.")
