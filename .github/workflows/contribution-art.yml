@@ -1,31 +1,31 @@
-name: Generate MATEJ Commit Art Daily
+# name: Generate MATEJ Commit Art Daily
 
-on:
-  schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
+# on:
+#   schedule:
+#     - cron: '0 0 * * *'
+#   workflow_dispatch:
 
-jobs:
-  generate-art:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          persist-credentials: false
+# jobs:
+#   generate-art:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+#         with:
+#           persist-credentials: false
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.x'
 
-      - name: Configure Git identity
-        run: |
-          git config --global user.name "GitHub Actions Bot (bymatej)"
-          git config --global user.email "programming@bymatej.com"
+#       - name: Configure Git identity
+#         run: |
+#           git config --global user.name "GitHub Actions Bot (bymatej)"
+#           git config --global user.email "programming@bymatej.com"
 
-      - name: Generate commit art
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python3 generate_art.py
+#       - name: Generate commit art
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: |
+#           python3 generate_art.py
